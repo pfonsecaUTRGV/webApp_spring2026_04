@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import requests 
 
 def home(request):
 	return render(request, 'home.html',{})
@@ -39,8 +40,30 @@ def profile(request):
     return render(request, "profile.html", {"u_form": u_form, "p_form":p_form})
 
 
+def pokedex_view(request):
+    pokemon_data = None
+    error = None    
 
+    if request.method == "POST":
+        pokemon = request.POST.get("pokemon","")
 
+        if pokemon:
+            url = f"https://pokeapi.co/api/v2/pokemon/{pokemon}"
 
+            response = requests.get(url)
 
+            if response.status_code == 200:
+                data = response.json()
+                pokemon_data = {
 
+                    "name":data["name"],
+                    "id": data["id"],
+                    "types":[t["type"]["name"] for t in data ["types"]],
+                    "image": data["sprites"]["front_default"],
+                }
+        else:
+            error = "The pokemon does not exist"
+
+    return render(request,"pokedex.html",{
+        "pokemon_data":pokemon_data,
+        "error": error})

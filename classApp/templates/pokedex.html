@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="POST">
+	{% csrf_token%}
+	<input type="text" name="pokemon" placeholder="Type your pokemon" required>
+	<button type="submit">Search Pokemon</button>
+</form>
+
+{% if pokemon_data %}
+	<h2> {{ pokemon_data.name|title }}</h2>
+	<p>ID: {{ pokemon_data.id }}</p>
+	<p>Type: {{pokemon_data.types|join:','}}</p>
+	<img src="{{pokemon_data.image}}">
+
+{%endif%}
+{% endblock %}
