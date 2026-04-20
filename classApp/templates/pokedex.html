@@ -1,17 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pokedex</title>
+
+    <style>
+        body {
+            background-color: #d32f2f;
+            font-family: Arial, sans-serif;
+        }
+
+        .pokedex {
+            width: 340px;
+            margin: 50px auto;
+            padding: 15px;
+            background: #c62828;
+            border: 5px solid black;
+            border-radius: 12px;
+            box-shadow: 5px 5px 0px black;
+        }
+
+        /* Top bar (fake buttons) */
+        .top-bar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .blue { background: #42a5f5; }
+        .red { background: #ef5350; }
+        .green { background: #66bb6a; }
+
+        /* Screen */
+        .screen {
+            background: #9e9e9e;
+            height: 180px;
+            border: 4px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen img {
+            max-height: 130px;
+        }
+
+        .placeholder {
+            color: #555;
+        }
+
+        /* Bottom panel */
+        .info-panel {
+            margin-top: 12px;
+            padding: 10px;
+            background: #b71c1c;
+            border: 3px solid black;
+        }
+
+        /* Form */
+        .search-form {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 6px;
+            border: none;
+        }
+
+        .search-form button {
+            padding: 6px 10px;
+            background: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Info lines */
+        .info-lines {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .line {
+            background: #424242;
+            color: #fff;
+            padding: 6px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
 {% extends 'base.html' %}
+
 {% block content %}
 
-<form method="POST">
-	{% csrf_token%}
-	<input type="text" name="pokemon" placeholder="Type your pokemon" required>
-	<button type="submit">Search Pokemon</button>
-</form>
+<div class="pokedex">
 
-{% if pokemon_data %}
-	<h2> {{ pokemon_data.name|title }}</h2>
-	<p>ID: {{ pokemon_data.id }}</p>
-	<p>Type: {{pokemon_data.types|join:','}}</p>
-	<img src="{{pokemon_data.image}}">
+    <!-- Top fake buttons -->
+    <div class="top-bar">
+        <div class="circle blue"></div>
+        <div class="circle red"></div>
+        <div class="circle green"></div>
+    </div>
 
-{%endif%}
+    <!-- Screen -->
+    <div class="screen">
+        {% if pokemon_data %}
+            <img src="{{ pokemon_data.image }}" alt="{{ pokemon_data.name }}">
+        {% else %}
+            <p class="placeholder">Search for a Pokémon</p>
+        {% endif %}
+    </div>
+
+    <!-- Bottom panel -->
+    <div class="info-panel">
+
+        <!-- Search -->
+        <form method="POST" class="search-form">
+            {% csrf_token %}
+            <input type="text" name="pokemon" placeholder="Type your Pokémon" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Data -->
+        {% if pokemon_data %}
+        <div class="info-lines">
+            <div class="line">Name: {{ pokemon_data.name|title }}</div>
+            <div class="line">ID: {{ pokemon_data.id }}</div>
+            <div class="line">Type: {{ pokemon_data.types|join:',' }}</div>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
 {% endblock %}
+
+</body>
+</html>
